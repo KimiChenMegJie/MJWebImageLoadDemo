@@ -48,6 +48,13 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    
+    //1.清除内存中的所有image
+    [self.imageCache removeAllObjects];
+    //2.清除队列中的所有操作
+    [self.operations cancelAllOperations];
+    //3.移除所有的操作
+    [self.operationCache removeAllObjects];
 }
 
 
