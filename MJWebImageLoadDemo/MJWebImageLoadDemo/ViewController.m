@@ -8,8 +8,13 @@
 
 #import "ViewController.h"
 #import "AFNetworking.h"
+#import "MJAppInfo.h"
 
 @interface ViewController ()
+/**
+ *  装有模型的数组
+ */
+@property (nonatomic,strong)NSMutableArray *appInfosData;
 
 @end
 
@@ -49,12 +54,30 @@
      */
     
     [manager GET:urlString parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"网络请求成功");
+//        NSLog(@"网络请求成功");
+        //1.获取数据到临时数组
+        NSArray *tempArray = responseObject;
+        //2.字典转模型
+        for (NSDictionary *dict in tempArray) {
+            MJAppInfo *info = [MJAppInfo appInfoWithDict:dict];
+            [self.appInfosData addObject:info];
+        }
+        NSLog(@"%@",self.appInfosData);
+        //重新刷新tabelView数据
+        [self.tableView reloadData];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"网络请求失败");
     }];
     
 }
 
+#pragma mark - 懒加载
+-(NSMutableArray *)appInfosData
+{
+    if (!_appInfosData) {
+        _appInfosData = [NSMutableArray array];
+    }
+    return _appInfosData;
+}
 
 @end

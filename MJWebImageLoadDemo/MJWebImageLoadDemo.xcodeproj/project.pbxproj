@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3F4CBC3E1D4CE6D2009B8D42 /* MJAppInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CBC3D1D4CE6D2009B8D42 /* MJAppInfo.m */; };
 		3F8820B51D4CDD6F00F50D2B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F8820B41D4CDD6F00F50D2B /* main.m */; };
 		3F8820B81D4CDD6F00F50D2B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F8820B71D4CDD6F00F50D2B /* AppDelegate.m */; };
 		3F8820BB1D4CDD6F00F50D2B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F8820BA1D4CDD6F00F50D2B /* ViewController.m */; };
@@ -39,6 +40,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3F4CBC3C1D4CE6D2009B8D42 /* MJAppInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJAppInfo.h; sourceTree = "<group>"; };
+		3F4CBC3D1D4CE6D2009B8D42 /* MJAppInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJAppInfo.m; sourceTree = "<group>"; };
 		3F8820B01D4CDD6F00F50D2B /* MJWebImageLoadDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MJWebImageLoadDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F8820B41D4CDD6F00F50D2B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		3F8820B61D4CDD6F00F50D2B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -140,6 +143,8 @@
 				3F8820C11D4CDD6F00F50D2B /* LaunchScreen.storyboard */,
 				3F8820C41D4CDD6F00F50D2B /* Info.plist */,
 				3F8820B31D4CDD6F00F50D2B /* Supporting Files */,
+				3F4CBC3C1D4CE6D2009B8D42 /* MJAppInfo.h */,
+				3F4CBC3D1D4CE6D2009B8D42 /* MJAppInfo.m */,
 			);
 			path = MJWebImageLoadDemo;
 			sourceTree = "<group>";
@@ -315,6 +320,7 @@
 				3F8821101D4CE22800F50D2B /* UIImage+MultiFormat.m in Sources */,
 				3F8821111D4CE22800F50D2B /* UIImage+WebP.m in Sources */,
 				3F88210B1D4CE22800F50D2B /* SDWebImageDownloaderOperation.m in Sources */,
+				3F4CBC3E1D4CE6D2009B8D42 /* MJAppInfo.m in Sources */,
 				3F8821141D4CE22800F50D2B /* UIView+WebCacheOperation.m in Sources */,
 				3F88210A1D4CE22800F50D2B /* SDWebImageDownloader.m in Sources */,
 				3F88210F1D4CE22800F50D2B /* UIImage+GIF.m in Sources */,
@@ -475,6 +481,7 @@
 				3F8820C91D4CDD6F00F50D2B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
