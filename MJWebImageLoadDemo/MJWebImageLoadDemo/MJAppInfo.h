@@ -6,7 +6,7 @@
 //  Copyright © 2016年 kimi. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @interface MJAppInfo : NSObject
 /**
@@ -21,6 +21,11 @@
  *  图标名称
  */
 @property (nonatomic,copy)NSString *name;
+
+/**
+ *  图片
+ */
+@property (nonatomic,strong)UIImage *iconImage;
 
 
 + (instancetype)appInfoWithDict:(NSDictionary *)dict;

@@ -20,15 +20,29 @@
  *  全局操作队列中
  */
 @property (nonatomic,strong)NSOperationQueue *operations;
+/**
+ *  图片缓存字典
+ */
+@property (nonatomic,strong)NSMutableDictionary *imageCache;
+/**
+ *  操作缓存字典
+ */
+@property (nonatomic,strong)NSMutableDictionary *operationCache;
+
 
 @end
 
 @implementation ViewController
+{
+    //测试变量
+    __block NSInteger count;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     [self loadData];
+    count = 1;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -85,6 +99,9 @@
  4.如果后面的图片下载得慢,界面来回拖的时候,就会造成图片错乱,cell复用
  - 图片下载完成之后,将图片保存到模型中(图片与模型相对应,而不是与cell相对应,因为cell会复用)
  - 保存到模型中之后,就去刷新对应模型那一行的cell
+ 5.把图片缓存到字典
+ - 为什么: 缓存到字典里面在清除缓存的时候更加方式
+ - 以后做缓存的话,请尽量考虑使用字典 NSCache(基于 LRU 算法)
  */
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -102,13 +119,27 @@
     cell.downloadLabel.text = infoData.download;
     //设置默认显示图片为空
     cell.iconView.image = nil;
-
+    
+    //先判断字典缓存中是否有图片，有的话就不需要下，直接从字典获取
+    UIImage *cacheImage = self.imageCache[infoData.icon];
+    if (cacheImage) {
+        cell.iconView.image = cacheImage;
+        return cell;
+    }
+    
+    //操作之前首先判断是否已进行该下载操作
+    if (self.operationCache[infoData.icon]) {
+        NSLog(@"已经在下载,请稍等...");
+        return cell;
+    }
+    
     //初始化一个操作到后台下载图片
     NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
         //制造网络不好数据加载慢的情况
         if (indexPath.row >= 9) {
             [NSThread sleepForTimeInterval:3];
         }
+        NSLog(@"%@ %ld",[NSThread currentThread],count++);
         //获取URL地址
         NSURL *imageUrl = [NSURL URLWithString:infoData.icon];
         //获取二进制数据
@@ -117,11 +148,23 @@
         UIImage *image = [UIImage imageWithData:imageData];
         
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            //在主线程中更新UI
-            cell.iconView.image = image;
+            //将图片缓存到字典，需要在更新UI前
+            [self.imageCache setObject:image forKey:infoData.icon];
+            
+            //更新完图片缓存后应移除当前操作
+            [self.operationCache removeObjectForKey:infoData.icon];
+            
+            //最后刷新模型对应的cell
+            //reloadRowAtIndexPaths:刷新对应indexPath数据
+            //这个方法会调用，返回cellde方法，并且只会刷新对应indexPath的行，传对应的indexPath就会刷新对应的cell
+            [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
         }];
 
     }];
+    
+    //注意别忘了，缓存当前，避免在没有下载完成之前，又拖动cell再次下载，因此需要把操作缓存到字典
+    [self.operationCache setObject:op forKey:infoData.icon];
+    
     //记得将操作加入到队列
     [self.operations addOperation:op];
     
@@ -145,4 +188,20 @@
     return _operations;
 }
 
+- (NSMutableDictionary *)imageCache
+{
+    if (!_imageCache) {
+        _imageCache = [NSMutableDictionary dictionary];
+    }
+    return _imageCache;
+}
+
+- (NSMutableDictionary *)operationCache
+{
+    if (!_operationCache) {
+        _operationCache = [NSMutableDictionary dictionary];
+    }
+    
+    return _operationCache;
+}
 @end
