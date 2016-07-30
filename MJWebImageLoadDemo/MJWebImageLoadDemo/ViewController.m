@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "AFNetworking.h"
 #import "MJAppInfo.h"
+#import "MJAppInfoCell.h"
 
 @interface ViewController ()
 /**
@@ -69,6 +70,39 @@
         NSLog(@"网络请求失败");
     }];
     
+}
+
+#pragma mark - 数据源方法
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return self.appInfosData.count;
+}
+
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    MJAppInfoCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
+    
+    //获取模型数据
+    MJAppInfo *infoData = self.appInfosData[indexPath.row];
+    
+    cell.nameLabel.text = infoData.name;
+    
+    cell.downloadLabel.text = infoData.download;
+    
+//    NSLog(@"%@",infoData.icon);
+    
+    //获取URL地址
+    NSURL *imageUrl = [NSURL URLWithString:infoData.icon];
+    //获取二进制数据
+    NSData *imageData = [NSData dataWithContentsOfURL:imageUrl];
+    
+    //二进制数据转换图片
+    UIImage *image = [UIImage imageWithData:imageData];
+    
+    cell.iconView.image = image;
+    
+    
+    return cell;
 }
 
 #pragma mark - 懒加载

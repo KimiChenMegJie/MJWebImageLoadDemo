@@ -15,7 +15,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" rowHeight="60" id="Dez-8w-oPh">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" rowHeight="60" id="Dez-8w-oPh" customClass="MJAppInfoCell">
                                 <rect key="frame" x="0.0" y="92" width="600" height="60"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Dez-8w-oPh" id="xGf-io-GlL">
@@ -51,6 +51,11 @@
                                         <constraint firstItem="c96-3J-pll" firstAttribute="leading" secondItem="cVK-JC-ZV2" secondAttribute="leading" id="xdy-DN-Rqb"/>
                                     </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="downloadLabel" destination="c96-3J-pll" id="WQK-e3-V3h"/>
+                                    <outlet property="iconView" destination="zi2-cX-KGQ" id="7RW-II-U2f"/>
+                                    <outlet property="nameLabel" destination="cVK-JC-ZV2" id="UeN-fU-jbx"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>

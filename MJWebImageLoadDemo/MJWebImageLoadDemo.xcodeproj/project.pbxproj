@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3F4CBC3E1D4CE6D2009B8D42 /* MJAppInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CBC3D1D4CE6D2009B8D42 /* MJAppInfo.m */; };
+		3F7C68401D4CEF0900A3E857 /* MJAppInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F7C683F1D4CEF0900A3E857 /* MJAppInfoCell.m */; };
 		3F8820B51D4CDD6F00F50D2B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F8820B41D4CDD6F00F50D2B /* main.m */; };
 		3F8820B81D4CDD6F00F50D2B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F8820B71D4CDD6F00F50D2B /* AppDelegate.m */; };
 		3F8820BB1D4CDD6F00F50D2B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F8820BA1D4CDD6F00F50D2B /* ViewController.m */; };
@@ -42,6 +43,8 @@
 /* Begin PBXFileReference section */
 		3F4CBC3C1D4CE6D2009B8D42 /* MJAppInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJAppInfo.h; sourceTree = "<group>"; };
 		3F4CBC3D1D4CE6D2009B8D42 /* MJAppInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJAppInfo.m; sourceTree = "<group>"; };
+		3F7C683E1D4CEF0900A3E857 /* MJAppInfoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJAppInfoCell.h; sourceTree = "<group>"; };
+		3F7C683F1D4CEF0900A3E857 /* MJAppInfoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJAppInfoCell.m; sourceTree = "<group>"; };
 		3F8820B01D4CDD6F00F50D2B /* MJWebImageLoadDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MJWebImageLoadDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F8820B41D4CDD6F00F50D2B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		3F8820B61D4CDD6F00F50D2B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -145,6 +148,8 @@
 				3F8820B31D4CDD6F00F50D2B /* Supporting Files */,
 				3F4CBC3C1D4CE6D2009B8D42 /* MJAppInfo.h */,
 				3F4CBC3D1D4CE6D2009B8D42 /* MJAppInfo.m */,
+				3F7C683E1D4CEF0900A3E857 /* MJAppInfoCell.h */,
+				3F7C683F1D4CEF0900A3E857 /* MJAppInfoCell.m */,
 			);
 			path = MJWebImageLoadDemo;
 			sourceTree = "<group>";
@@ -332,6 +337,7 @@
 				3F8821071D4CE22800F50D2B /* SDImageCache.m in Sources */,
 				3F88210E1D4CE22800F50D2B /* UIButton+WebCache.m in Sources */,
 				3F8821061D4CE22800F50D2B /* NSData+ImageContentType.m in Sources */,
+				3F7C68401D4CEF0900A3E857 /* MJAppInfoCell.m in Sources */,
 				3F8821021D4CE22800F50D2B /* AFURLRequestSerialization.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
