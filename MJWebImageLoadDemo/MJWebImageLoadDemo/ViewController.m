@@ -16,6 +16,10 @@
  *  装有模型的数组
  */
 @property (nonatomic,strong)NSMutableArray *appInfosData;
+/**
+ *  全局操作队列中
+ */
+@property (nonatomic,strong)NSOperationQueue *operations;
 
 @end
 
@@ -55,7 +59,7 @@
      */
     
     [manager GET:urlString parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-//        NSLog(@"网络请求成功");
+        //        NSLog(@"网络请求成功");
         //1.获取数据到临时数组
         NSArray *tempArray = responseObject;
         //2.字典转模型
@@ -86,21 +90,33 @@
     MJAppInfo *infoData = self.appInfosData[indexPath.row];
     
     cell.nameLabel.text = infoData.name;
-    
     cell.downloadLabel.text = infoData.download;
+    //设置默认显示图片为空
+    cell.iconView.image = nil;
     
-//    NSLog(@"%@",infoData.icon);
-    
-    //获取URL地址
-    NSURL *imageUrl = [NSURL URLWithString:infoData.icon];
-    //获取二进制数据
-    NSData *imageData = [NSData dataWithContentsOfURL:imageUrl];
-    
-    //二进制数据转换图片
-    UIImage *image = [UIImage imageWithData:imageData];
-    
-    cell.iconView.image = image;
-    
+    //    NSLog(@"%@",infoData.icon);
+    //初始化一个操作到后台下载图片
+    NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+        //制造网络不好数据加载慢的情况
+        if (indexPath.row >= 9) {
+            [NSThread sleepForTimeInterval:3];
+        }
+//        NSLog(@"%@",[NSThread currentThread]);
+        //获取URL地址
+        NSURL *imageUrl = [NSURL URLWithString:infoData.icon];
+        //获取二进制数据
+        NSData *imageData = [NSData dataWithContentsOfURL:imageUrl];
+        //二进制数据转换图片
+        UIImage *image = [UIImage imageWithData:imageData];
+        
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            //在主线程中更新UI
+            cell.iconView.image = image;
+        }];
+
+    }];
+    //记得将操作加入到队列
+    [self.operations addOperation:op];
     
     return cell;
 }
@@ -112,6 +128,14 @@
         _appInfosData = [NSMutableArray array];
     }
     return _appInfosData;
+}
+
+-(NSOperationQueue *)operations
+{
+    if (!_operations) {
+        _operations = [[NSOperationQueue alloc]init];
+    }
+    return _operations;
 }
 
 @end
