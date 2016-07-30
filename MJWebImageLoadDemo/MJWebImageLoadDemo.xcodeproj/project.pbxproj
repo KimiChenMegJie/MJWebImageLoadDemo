@@ -105,6 +105,7 @@
 		3F8820A81D4CDD6F00F50D2B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				CLASSPREFIX = MJ;
 				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = kimi;
 				TargetAttributes = {
