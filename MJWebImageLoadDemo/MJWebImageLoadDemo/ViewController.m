@@ -51,11 +51,7 @@
     
     /**
      *  参数：
-     1.请求的地址
-     2.请求的参数
-     3.加载的进度
-     4.成功的回调
-     5.失败的回调
+     1.请求的地址2.请求的参数3.加载的进度4.成功的回调5.失败的回调
      */
     
     [manager GET:urlString parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -77,6 +73,19 @@
 }
 
 #pragma mark - 数据源方法
+/*
+ 问题:
+ 
+ 1.不能同步下载图片,不然会很卡
+ - 在异步下载图片
+ 2.图片下载完成之后,图片显示不出来
+ - 原因: 返回cell的时候,图片可能还没有下载成功,而一返回cell的话,cell就被显示到界面上,这个时候还没有图片,图片下载成功之后给cell的imageView设置了图片,但是imageView没有大小.而当我一点击的时候,就会调用 layoutsubviews 的方法
+ 3.如果在返回cell的时候,图片不清空,那么这个cell被复用的时候,会先显示之前的图标 ,然后才会显示当前cell对应的图标
+ - 在返回cell的时候清空图片或者设置占位图片
+ 4.如果后面的图片下载得慢,界面来回拖的时候,就会造成图片错乱,cell复用
+ - 图片下载完成之后,将图片保存到模型中(图片与模型相对应,而不是与cell相对应,因为cell会复用)
+ - 保存到模型中之后,就去刷新对应模型那一行的cell
+ */
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return self.appInfosData.count;
@@ -93,15 +102,13 @@
     cell.downloadLabel.text = infoData.download;
     //设置默认显示图片为空
     cell.iconView.image = nil;
-    
-    //    NSLog(@"%@",infoData.icon);
+
     //初始化一个操作到后台下载图片
     NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
         //制造网络不好数据加载慢的情况
         if (indexPath.row >= 9) {
             [NSThread sleepForTimeInterval:3];
         }
-//        NSLog(@"%@",[NSThread currentThread]);
         //获取URL地址
         NSURL *imageUrl = [NSURL URLWithString:infoData.icon];
         //获取二进制数据
