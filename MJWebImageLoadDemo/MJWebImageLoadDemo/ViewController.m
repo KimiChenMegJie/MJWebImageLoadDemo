@@ -11,6 +11,8 @@
 #import "MJAppInfo.h"
 #import "MJAppInfoCell.h"
 #import "NSString+path.h"
+#import "MJWebImageManager.h"
+
 @interface ViewController ()
 /**
  *  装有模型的数组
@@ -43,6 +45,14 @@
     // Do any additional setup after loading the view, typically from a nib.
     [self loadData];
     count = 1;
+    
+    //测试单例
+    //    MJWebImageManager *manage1 = [MJWebImageManager sharedWebImageManager];
+    //    NSLog(@"%p",manage1);
+    //    MJWebImageManager *manage2 = [MJWebImageManager sharedWebImageManager];
+    //    NSLog(@"%p",manage2);
+    //    MJWebImageManager *manage3 = [MJWebImageManager sharedWebImageManager];
+    //    NSLog(@"%p",manage3);
 }
 
 - (void)didReceiveMemoryWarning {
@@ -122,88 +132,20 @@
     MJAppInfoCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
     
     //获取模型数据
-    __block MJAppInfo *infoData = self.appInfosData[indexPath.row];
+    MJAppInfo *infoData = self.appInfosData[indexPath.row];
     
     cell.nameLabel.text = infoData.name;
     cell.downloadLabel.text = infoData.download;
     //设置默认显示图片为空
     cell.iconView.image = nil;
     
-    //先判断字典缓存中是否有图片，有的话就不需要下，直接从字典获取
-    UIImage *cacheImage = self.imageCache[infoData.icon];
-    if (cacheImage) {
-        NSLog(@"从内存中取出图片");
-        cell.iconView.image = cacheImage;
-        return cell;
-    }
-    
-    //从沙盒中取出图片
-    NSString *cachePath = [infoData.icon appendCachePath];
-    cacheImage = [UIImage imageWithContentsOfFile:cachePath];
-    if (cacheImage) {
-        NSLog(@"从沙盒中取出图片");
-        //别忘记缓存到内存中一份
-        [self.imageCache setObject:cacheImage forKey:infoData.icon];
-        cell.iconView.image = cacheImage;
-        return cell;
-    }
-    
-    //操作之前首先判断是否已进行该下载操作
-    if (self.operationCache[infoData.icon]) {
-        NSLog(@"已经在下载,请稍等...");
-        return cell;
-    }
-    
-    //初始化一个操作到后台下载图片
-    NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
-        //制造网络不好数据加载慢的情况
-        if (indexPath.row >= 9) {
-            [NSThread sleepForTimeInterval:3];
-        }
-        NSLog(@"%@ %ld",[NSThread currentThread],count++);
-        //获取URL地址
-        NSURL *imageUrl = [NSURL URLWithString:infoData.icon];
-        //获取二进制数据
-        NSData *imageData = [NSData dataWithContentsOfURL:imageUrl];
-        /**
-         *  将图片写入沙盒
-         */
-        //获取沙盒路径
-        NSString *cachePath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, true).firstObject;
-        //获取图片名字
-        NSString *picPath = [infoData.icon lastPathComponent];
-        //        NSLog(@"%@",picPath);
-        //写入沙盒
-        if (![imageData writeToFile:[cachePath stringByAppendingPathComponent:picPath] atomically:YES]) {
-            NSLog(@"写入失败");
-        }
-        
-        //二进制数据转换图片
-        UIImage *image = [UIImage imageWithData:imageData];
-        
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            //将图片缓存到字典，需要在更新UI前
-            [self.imageCache setObject:image forKey:infoData.icon];
-            
-            //更新完图片缓存后应移除当前操作
-            [self.operationCache removeObjectForKey:infoData.icon];
-            
-            //最后刷新模型对应的cell
-            //reloadRowAtIndexPaths:刷新对应indexPath数据
-            //这个方法会调用，返回cellde方法，并且只会刷新对应indexPath的行，传对应的indexPath就会刷新对应的cell
-            [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
-        }];
-        
+    [[MJWebImageManager sharedWebImageManager] downloadImageWithUrlString:infoData.icon compeletion:^(UIImage *image){
+        cell.iconView.image = image;
     }];
-    
-    //注意别忘了，缓存当前，避免在没有下载完成之前，又拖动cell再次下载，因此需要把操作缓存到字典
-    [self.operationCache setObject:op forKey:infoData.icon];
-    
-    //记得将操作加入到队列
-    [self.operations addOperation:op];
     
     return cell;
 }
+
 
 #pragma mark - 懒加载
 -(NSMutableArray *)appInfosData
@@ -238,4 +180,6 @@
     
     return _operationCache;
 }
+
+
 @end
