@@ -100,13 +100,7 @@
     MJWebImageOperation *op = [MJWebImageOperation operationWithUrlString:urlString];
     
     __weak MJWebImageOperation *weakSelf = op;
-    //添加监听,添加监听下载完成，此方法不是很清楚
-    /*
-     A block object called when animations for this transaction group are completed.
-     block会在动画处理组完成后调用
-     The block object takes no parameters and returns no value.
-     这个block对象没有参数和返回值
-     */
+
     [op setCompletionBlock:^{
         //取得图片
         UIImage *image = weakSelf.image;

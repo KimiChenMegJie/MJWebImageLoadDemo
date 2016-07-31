@@ -22,15 +22,6 @@
  *  全局操作队列中
  */
 @property (nonatomic,strong)NSOperationQueue *operations;
-/**
- *  图片缓存字典
- */
-@property (nonatomic,strong)NSMutableDictionary *imageCache;
-/**
- *  操作缓存字典
- */
-@property (nonatomic,strong)NSMutableDictionary *operationCache;
-
 
 @end
 
@@ -59,12 +50,9 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
     
-    //1.清除内存中的所有image
-    [self.imageCache removeAllObjects];
     //2.清除队列中的所有操作
     [self.operations cancelAllOperations];
-    //3.移除所有的操作
-    [self.operationCache removeAllObjects];
+
 }
 
 
@@ -106,7 +94,6 @@
 #pragma mark - 数据源方法
 /*
  问题:
- 
  1.不能同步下载图片,不然会很卡
  - 在异步下载图片
  2.图片下载完成之后,图片显示不出来
@@ -164,23 +151,5 @@
     }
     return _operations;
 }
-
-- (NSMutableDictionary *)imageCache
-{
-    if (!_imageCache) {
-        _imageCache = [NSMutableDictionary dictionary];
-    }
-    return _imageCache;
-}
-
-- (NSMutableDictionary *)operationCache
-{
-    if (!_operationCache) {
-        _operationCache = [NSMutableDictionary dictionary];
-    }
-    
-    return _operationCache;
-}
-
 
 @end
