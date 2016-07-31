@@ -120,7 +120,7 @@
     MJAppInfoCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
     
     //获取模型数据
-    MJAppInfo *infoData = self.appInfosData[indexPath.row];
+   __block MJAppInfo *infoData = self.appInfosData[indexPath.row];
     
     cell.nameLabel.text = infoData.name;
     cell.downloadLabel.text = infoData.download;
@@ -151,9 +151,22 @@
         NSURL *imageUrl = [NSURL URLWithString:infoData.icon];
         //获取二进制数据
         NSData *imageData = [NSData dataWithContentsOfURL:imageUrl];
+        /**
+         *  将图片写入沙盒
+         */
+        //获取沙盒路径
+        NSString *cachePath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, true).firstObject;
+        //获取图片名字
+        NSString *picPath = [infoData.icon lastPathComponent];
+//        NSLog(@"%@",picPath);
+        //写入沙盒
+        if (![imageData writeToFile:[cachePath stringByAppendingPathComponent:picPath] atomically:YES]) {
+            NSLog(@"写入失败");
+        }
+        
         //二进制数据转换图片
         UIImage *image = [UIImage imageWithData:imageData];
-        
+
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
             //将图片缓存到字典，需要在更新UI前
             [self.imageCache setObject:image forKey:infoData.icon];
