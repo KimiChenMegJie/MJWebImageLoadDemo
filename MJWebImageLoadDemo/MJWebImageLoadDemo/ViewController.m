@@ -10,7 +10,7 @@
 #import "AFNetworking.h"
 #import "MJAppInfo.h"
 #import "MJAppInfoCell.h"
-
+#import "NSString+path.h"
 @interface ViewController ()
 /**
  *  装有模型的数组
@@ -109,6 +109,8 @@
  5.把图片缓存到字典
  - 为什么: 缓存到字典里面在清除缓存的时候更加方式
  - 以后做缓存的话,请尽量考虑使用字典 NSCache(基于 LRU 算法)
+ 6. 如果图片下载需要10秒钟,我不停止的拖动cell,会造成什么样的情况??
+ - 会一直初始化操作,一直给同一个图片下载添加多个操作,怎么解决?? 缓存操作
  */
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -120,7 +122,7 @@
     MJAppInfoCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
     
     //获取模型数据
-   __block MJAppInfo *infoData = self.appInfosData[indexPath.row];
+    __block MJAppInfo *infoData = self.appInfosData[indexPath.row];
     
     cell.nameLabel.text = infoData.name;
     cell.downloadLabel.text = infoData.download;
@@ -130,6 +132,18 @@
     //先判断字典缓存中是否有图片，有的话就不需要下，直接从字典获取
     UIImage *cacheImage = self.imageCache[infoData.icon];
     if (cacheImage) {
+        NSLog(@"从内存中取出图片");
+        cell.iconView.image = cacheImage;
+        return cell;
+    }
+    
+    //从沙盒中取出图片
+    NSString *cachePath = [infoData.icon appendCachePath];
+    cacheImage = [UIImage imageWithContentsOfFile:cachePath];
+    if (cacheImage) {
+        NSLog(@"从沙盒中取出图片");
+        //别忘记缓存到内存中一份
+        [self.imageCache setObject:cacheImage forKey:infoData.icon];
         cell.iconView.image = cacheImage;
         return cell;
     }
@@ -158,7 +172,7 @@
         NSString *cachePath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, true).firstObject;
         //获取图片名字
         NSString *picPath = [infoData.icon lastPathComponent];
-//        NSLog(@"%@",picPath);
+        //        NSLog(@"%@",picPath);
         //写入沙盒
         if (![imageData writeToFile:[cachePath stringByAppendingPathComponent:picPath] atomically:YES]) {
             NSLog(@"写入失败");
@@ -166,7 +180,7 @@
         
         //二进制数据转换图片
         UIImage *image = [UIImage imageWithData:imageData];
-
+        
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
             //将图片缓存到字典，需要在更新UI前
             [self.imageCache setObject:image forKey:infoData.icon];
@@ -179,7 +193,7 @@
             //这个方法会调用，返回cellde方法，并且只会刷新对应indexPath的行，传对应的indexPath就会刷新对应的cell
             [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
         }];
-
+        
     }];
     
     //注意别忘了，缓存当前，避免在没有下载完成之前，又拖动cell再次下载，因此需要把操作缓存到字典
