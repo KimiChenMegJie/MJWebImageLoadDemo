@@ -142,6 +142,7 @@
     [[MJWebImageManager sharedWebImageManager] downloadImageWithUrlString:infoData.icon compeletion:^(UIImage *image){
         cell.iconView.image = image;
     }];
+    //    [[MJWebImageManager sharedWebImageManager] downloadImageWithUrlString:infoData.icon compeletion:nil];
     
     return cell;
 }

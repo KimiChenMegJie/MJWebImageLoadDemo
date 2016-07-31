@@ -62,6 +62,9 @@
 
 - (void)downloadImageWithUrlString:(NSString *)urlString compeletion:(void (^)(UIImage *))compeletion
 {
+    //断言，如果传入空image报错,参数1:条件，参数2：描述
+    NSCAssert(compeletion != nil, @"必须传入回调的block");
+    
     //1.先判断字典缓存中是否有图片，有的话就不需要下，直接从字典获取
     UIImage *cacheImage = self.imageCache[urlString];
     if (cacheImage) {
